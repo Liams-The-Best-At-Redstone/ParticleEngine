@@ -62,7 +62,10 @@ function findParticlesAt(mouseX, mouseY, radiusThreshold = 20) {
     return currIndexes;
 }
 
-canvas.addEventListener('mousedown', (e) => {
+function getMousePos(e) {
+    const rect = canvas.get
+
+function handlrStart(e) {
     const rect = canvas.getBoundingClientRect();
     if (e.touches !== null) {
         const mouseX = e.touches[0].clientX - rect.left;
