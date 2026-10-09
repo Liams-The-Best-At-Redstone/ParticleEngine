@@ -63,26 +63,28 @@ function findParticlesAt(mouseX, mouseY, radiusThreshold = 20) {
 }
 
 function getMousePos(e) {
-    const rect = canvas.get
-
-function handlrStart(e) {
     const rect = canvas.getBoundingClientRect();
-    if (e.touches !== null) {
-        const mouseX = e.touches[0].clientX - rect.left;
-        const mouseY = e.touches[0].clientY - rect.top;
-    }
-    else {
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-    }
+
+    const mouseX = e.touches ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+    const mouseY = e.touches ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+
+    return ({
+        x: mouseX,
+        y: mouseY
+    });
+}
+
+function handleStart(e) {
+    const rect = canvas.getBoundingClientRect();
+    const pos = getMousePos(e);
 
     if (currentMode === 'add') {
         const selectedTypeString = particleSelector.value;
         const activeType = types[selectedTypeString];
         for (let i = 0; i < 10; i++) {
             particles.push({
-                x: mouseX + (Math.random() * 40 - 20),
-                y: mouseY + (Math.random() * 40 - 20),
+                x: pos.x + (Math.random() * 40 - 20),
+                y: pos.y + (Math.random() * 40 - 20),
                 vx: 0,
                 vy: 0,
                 type: activeType
@@ -90,7 +92,7 @@ function handlrStart(e) {
         }
     }
     else if (currentMode === 'remove') {
-        const indexes = findParticlesAt(mouseX, mouseY);
+        const indexes = findParticlesAt(pos.x, pos.y);
         if (indexes.length > 0) {
             isDragging = true;
             const targets = indexes.map(item => item.idx);
@@ -98,7 +100,7 @@ function handlrStart(e) {
         }
     }
     else if (currentMode === 'move') {
-        const indexes = findParticlesAt(mouseX, mouseY);
+        const indexes = findParticlesAt(pos.x, pos.y);
         if (indexes != null) {
             isDragging = true;
             draggedParticles = indexes;
@@ -106,21 +108,22 @@ function handlrStart(e) {
     }
 })
 
-canvas.addEventListener('mousemove', (e) => {
+function handleMove(e) {
+    const pos = getMousePos(e);
     if (!isDragging) return;
     const rect = canvas.getBoundingClientRect();
     if (currentMode === 'move') {
         if (draggedParticles === null) return;
         draggedParticles.forEach((p) => {
-            p.target.x = e.clientX - rect.left + p.dx;
-            p.target.y = e.clientY - rect.top + p.dy;
+            p.target.x = pos.x - rect.left + p.dx;
+            p.target.y = pos.y - rect.top + p.dy;
 
             p.target.vx = 0;
             p.target.vy = 0;
         })
     }
     else if (currentMode === 'remove') {
-        const indexes = findParticlesAt(e.clientX - rect.left, e.clientY - rect.top);
+        const indexes = findParticlesAt(pos.x - rect.left, pos.y - rect.top);
         if (indexes.length > 0) {
             const targets = indexes.map(item => item.idx);
             particles = particles.filter((p, i) => !targets.includes(i));
@@ -128,15 +131,19 @@ canvas.addEventListener('mousemove', (e) => {
     }
 })
 
-canvas.addEventListener('mouseup', (e) => {
+function handleEnd(e) {
     isDragging = false;
     draggedParticles = null;
 });
 
-canvas.addEventListener('mouseleave', (e) => {
-    isDragging = false;
-    draggedParticles = null;
-})
+canvas.addEventListener('mousedown', handleStart(e));
+canvas.addEventListener('mousemove', handleMove(e));
+canvas.addEventListener('mouseup', handleEnd(e));
+canvas.addEventListener('mouseleave', handleEnd(e));
+
+canvas.addEventListener('touchdown', handleStart(e));
+canvas.addEventListener('touchmove', handleMove(e));
+cancas.addEventListener('touchup', handleEnd(e));
 
 function setActiveMode(mode, buttonEl) {
     currentMode = mode;
