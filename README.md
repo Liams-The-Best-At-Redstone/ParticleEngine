@@ -6,8 +6,7 @@ This application is a interactive, browser-based **Particle Life Simulation**. I
 
 ## Interaction Types
 
-### Attraction
-| Particle Type | Interacts With |Attraction Modifier |
+| Particle Type | Interacts With | Attraction Modifier | Repulsion Radius (px) |
 | :--- | :--- | :--- | :--- |
 | **Blue** | Blue, Red, Green | **Blue:** 1.0 <br> **Red:** 0.5 <br> **Green:** 0.0 | **Blue:** 15 <br> **Red:** 15 <br> **Green:** 0 |
 | **Red** | Blue, Red, Green | **Blue:** 0.5 <br> **Red:** 1.0 <br> **Green:** 0.0 | **Blue:** 15 <br> **Red:** 15 <br> **Green:** 0 |
@@ -19,7 +18,7 @@ This application is a interactive, browser-based **Particle Life Simulation**. I
 
 The simulation includes a real-time UI control panel to let you actively manipulate the particels.
 
-* **Add Mode:** Click to inject clusters of 10 particles of your choic (`Blue`, `Red`, `Green`).
+* **Add Mode:** Click to inject clusters of 10 particles of your choice (`Blue`, `Red`, `Green`).
 * **Remove Mode:** Click or drag to erase particles by holding and dragging over them.
 * **Move Mode:** Pick up clusters of particles to reposition them across the canvas.
 * **Clear:** Instantly wipe the canvas of all particles.
