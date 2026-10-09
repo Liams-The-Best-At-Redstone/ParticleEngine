@@ -106,7 +106,7 @@ function handleStart(e) {
             draggedParticles = indexes;
         }
     }
-})
+}
 
 function handleMove(e) {
     const pos = getMousePos(e);
@@ -129,21 +129,21 @@ function handleMove(e) {
             particles = particles.filter((p, i) => !targets.includes(i));
         }
     }
-})
+}
 
 function handleEnd(e) {
     isDragging = false;
     draggedParticles = null;
-});
+}
 
 canvas.addEventListener('mousedown', handleStart);
 canvas.addEventListener('mousemove', handleMove);
 canvas.addEventListener('mouseup', handleEnd);
 canvas.addEventListener('mouseleave', handleEnd);
 
-canvas.addEventListener('touchdown', handleStart);
+canvas.addEventListener('touchstart', handleStart);
 canvas.addEventListener('touchmove', handleMove);
-cancas.addEventListener('touchup', handleEnd);
+cancas.addEventListener('touchend', handleEnd);
 
 function setActiveMode(mode, buttonEl) {
     currentMode = mode;
