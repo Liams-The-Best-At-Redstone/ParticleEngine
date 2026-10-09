@@ -35,7 +35,7 @@ You only need a modern web browser (such as Chrome, Firefox, Edge, or Safari).
 Follow these steps to install and run the simulation locally
 1. Clone this repository:
     ```bash
-    git clone https://github.com
+    git clone https://github.com/Liams-The-Best-At-Redstone/ParticleEngine
     ```
 2. Open the directory:
     ```bash
