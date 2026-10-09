@@ -19,7 +19,7 @@ const attractionMatrix = {
 const repulsionMatrix = {
     [types.BLUE]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0},
     [types.RED]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0.0},
-    [types.GREEN]: {[types.BLUE]: 50, [types.RED]: 60, [types.GREEN]: 0.0}
+    [types.GREEN]: {[types.BLUE]: 50, [types.RED]: 80, [types.GREEN]: 0.0}
 }
 
 const minRadius = 0;
