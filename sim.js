@@ -12,18 +12,18 @@ const types = Object.freeze({
 });
 
 const attractionMatrix = {
-    [types.BLUE]: {[types.BLUE]: 1.0, [types.RED]: 0.5, [types.GREEN]: 0},
-    [types.RED]: {[types.BLUE]: 0.5, [types.RED]: 1.0, [types.GREEN]: 0},
-    [types.GREEN]: {[types.BLUE]: 0.5, [types.RED]: 0.5, [types.GREEN]: -0.2}
+    [types.BLUE]: {[types.BLUE]: 1.5, [types.RED]: 0.0, [types.GREEN]: 0.0},
+    [types.RED]: {[types.BLUE]: 0.0, [types.RED]: 1.5, [types.GREEN]: 0.0},
+    [types.GREEN]: {[types.BLUE]: 1.0, [types.RED]: 8.0, [types.GREEN]: -0.7}
 }
 const repulsionMatrix = {
     [types.BLUE]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0},
-    [types.RED]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0},
-    [types.GREEN]: {[types.BLUE]: 50, [types.RED]: 50, [types.GREEN]: 0.0}
+    [types.RED]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0.0},
+    [types.GREEN]: {[types.BLUE]: 50, [types.RED]: 60, [types.GREEN]: 0.0}
 }
 
 const minRadius = 0;
-const maxRadius = 200;
+const maxRadius = 400;
 const friction = 0.95;
 const force = 0.5;
 const particleRadius = 5;
@@ -133,16 +133,6 @@ function setActiveMode(mode, buttonEl) {
     currentMode = mode;
     document.querySelectorAll('#ui-panel button').forEach(btn => btn.classList.remove('active'));
     buttonEl.classList.add('active');
-}
-
-for (let i = 0; i < 1000; i++) {
-    particles.push({
-        x: Math.floor(Math.random() * canvas.width),
-        y: Math.floor(Math.random() * canvas.height),
-        vx: 0,
-        vy: 0,
-        type: types.BLUE
-    });
 }
 
 function gameLoop() {
