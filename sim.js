@@ -136,14 +136,14 @@ function handleEnd(e) {
     draggedParticles = null;
 });
 
-canvas.addEventListener('mousedown', handleStart(e));
-canvas.addEventListener('mousemove', handleMove(e));
-canvas.addEventListener('mouseup', handleEnd(e));
-canvas.addEventListener('mouseleave', handleEnd(e));
+canvas.addEventListener('mousedown', handleStart);
+canvas.addEventListener('mousemove', handleMove);
+canvas.addEventListener('mouseup', handleEnd);
+canvas.addEventListener('mouseleave', handleEnd);
 
-canvas.addEventListener('touchdown', handleStart(e));
-canvas.addEventListener('touchmove', handleMove(e));
-cancas.addEventListener('touchup', handleEnd(e));
+canvas.addEventListener('touchdown', handleStart);
+canvas.addEventListener('touchmove', handleMove);
+cancas.addEventListener('touchup', handleEnd);
 
 function setActiveMode(mode, buttonEl) {
     currentMode = mode;
