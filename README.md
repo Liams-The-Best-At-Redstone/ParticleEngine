@@ -1,6 +1,6 @@
 # Particle Engine Using Javascript and a Canvas Element
 
-    This application is a interactive, browser-based **Particle Life Simulation**. It was made purely with Javascript and the HTML5 Canvas. It uses basic math to create life-like behaviors and complex patterns.
+This application is a interactive, browser-based **Particle Life Simulation**. It was made purely with Javascript and the HTML5 Canvas. It uses basic math to create life-like behaviors and complex patterns.
 
 ---
 
