@@ -115,8 +115,8 @@ function handleMove(e) {
     if (currentMode === 'move') {
         if (draggedParticles === null) return;
         draggedParticles.forEach((p) => {
-            p.target.x = pos.x - rect.left + p.dx;
-            p.target.y = pos.y - rect.top + p.dy;
+            p.target.x = pos.x + p.dx;
+            p.target.y = pos.y + p.dy;
 
             p.target.vx = 0;
             p.target.vy = 0;
@@ -143,7 +143,7 @@ canvas.addEventListener('mouseleave', handleEnd);
 
 canvas.addEventListener('touchstart', handleStart);
 canvas.addEventListener('touchmove', handleMove);
-cancas.addEventListener('touchend', handleEnd);
+canvas.addEventListener('touchend', handleEnd);
 
 function setActiveMode(mode, buttonEl) {
     currentMode = mode;
