@@ -123,7 +123,7 @@ function handleMove(e) {
         })
     }
     else if (currentMode === 'remove') {
-        const indexes = findParticlesAt(pos.x - rect.left, pos.y - rect.top);
+        const indexes = findParticlesAt(pos.x, pos.y);
         if (indexes.length > 0) {
             const targets = indexes.map(item => item.idx);
             particles = particles.filter((p, i) => !targets.includes(i));
