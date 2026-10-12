@@ -4,16 +4,6 @@ This application is a interactive, browser-based **Particle Life Simulation**. I
 
 ---
 
-## Interaction Types
-
-| Particle Type | Interacts With | Attraction Modifier | Repulsion Radius (px) |
-| :--- | :--- | :--- | :--- |
-| **Blue** | Blue, Red, Green | **Blue:** 1.0 <br> **Red:** 0.5 <br> **Green:** 0.0 | **Blue:** 15 <br> **Red:** 15 <br> **Green:** 0 |
-| **Red** | Blue, Red, Green | **Blue:** 0.5 <br> **Red:** 1.0 <br> **Green:** 0.0 | **Blue:** 15 <br> **Red:** 15 <br> **Green:** 0 |
-| **Green** | Blue, Red, Green | **Blue:** 0.5 <br> **Red:** 0.5 <br> **Green:** -0.2 | **Blue:** 50 <br> **Red:** 50 <br> **Green:** 0 |
-
----
-
 ## Interactive Features
 
 The simulation includes a real-time UI control panel to let you actively manipulate the particels.
