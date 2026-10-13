@@ -21,6 +21,12 @@ const repulsionMatrix = {
     [types.RED]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0.0},
     [types.GREEN]: {[types.BLUE]: 50, [types.RED]: 80, [types.GREEN]: 0.0}
 }
+const typeColors = {
+    [types.BLUE]: 'rgba(65, 185, 255, 0.7)',
+    [types.RED]: 'rgba(238, 12, 12, 0.7)',
+    [types.GREEN]: 'rgba(14, 204, 8, 0.7)'
+}
+    
 
 const minRadius = 0;
 const maxRadius = 400;
@@ -227,13 +233,7 @@ function update() {
 
 function render() {
     for (let i = 0; i < particles.length; i++) {
-        if (particles[i].type == types.BLUE) {
-            ctx.fillStyle = 'rgba(65, 185, 255, 0.7)';
-        } else if (particles[i].type == types.RED) {
-            ctx.fillStyle = 'rgba(238, 12, 12, 0.7)';
-        } else if (particles[i].type == types.GREEN) {
-            ctx.fillStyle = 'rgba(14, 204, 8, 0.7)';
-        }
+        ctx.fillStyle = typeColors[particles[i].type]];
         ctx.beginPath();
         ctx.arc(particles[i].x, particles[i].y, particleRadius, 0, Math.PI * 2);
         ctx.fill();
