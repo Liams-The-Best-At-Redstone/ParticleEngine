@@ -8,15 +8,26 @@ canvas {
     display: block;
 }
 #ui-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     position: absolute;
     top: 10px;
     left: 10px;
     color: white;
-    padding: 10px;
     border-radius: 8px;
-    display: flex;
-    gap: 8px;
     z-index: 10;
+    padding: 10px;
+    gap: 10px;
+    overflow: visible;
+}
+#toggleable-ui {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    left: 10px;
+    color: white;
+    gap: 10px;
 }
 button {
     padding: 6px 12px;
@@ -39,8 +50,16 @@ button.active {
     background: #007bff;
     border-color: #0056b3;
 }
-#force-table {
-    margin-top: 10px;
+.table-group {
+    position: relative;
+    display: inline;
+    align-items: center;
+}
+#force-table, #repel-table {
+    position: absolute;
+    top: 34px;
+    left: 50%;
+    transform: translateX(-50%);
     padding: 6px 12px;
     cursor: pointer;
     background: #444;
@@ -48,7 +67,7 @@ button.active {
     border: 1px solid #555;
     border-radius: 4px;
 }
-#force-table input {
+#force-table input, #repel-table input {
     max-width: 40px;
     background-color: #444;
     border: 1px solid #555;
@@ -56,40 +75,14 @@ button.active {
     color: white;
 }
 #force-table input::-webkit-inner-spin-button,
-#force-table input::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-#force-table input:focus {
-    border: 1pxsolid #555;
-}
-#repel-table {
-    margin-top: 10px;
-    padding: 6px 12px;
-    cursor: pointer;
-    background: #444;
-    color: white;
-    border: 1px solid #555;
-    border-radius: 4px;
-}
-#repel-table input {
-    max-width: 40px;
-    background-color: #444;
-    border: 1px solid #555;
-    border-radius: 4px;
-    color: white;
-}
+#force-table input::-webkit-outer-spin-button,
 #repel-table input::-webkit-inner-spin-button,
 #repel-table input::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-#repel-table input:focus {
-    border: 1pxsolid #555;
-}
-.table-group {
-    display: grid;
-    align-items: top;
+#force-table input:focus, #repel-table input:focus {
+    border: 1px solid #555;
 }
 .create-container input {
     height: 28px;
@@ -103,4 +96,8 @@ button.active {
     display: flex;
     align-items: flex-start;
     gap: 6px;
+}
+
+.hidden {
+    display: none !important;
 }

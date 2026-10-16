@@ -8,30 +8,33 @@
 </head>
 <body>
     <div id="ui-panel">
-        <div class="control-group">
-            <select id="particle-selector">
-                <option value="0" selected>Blue</option>
-                <option value="1">Red</option>
-                <option value="2">Green</option>
-            </select>
-            <button id="mode-add" class="active">Spawn Particles</button>
-        </div>
-        <button id="mode-remove">Remove Particles</button>
-        <button id="mode-move">Move Particles</button>
-        <button id="clear">Clear</button>
-        <button id="pause">Pause</button>
-        <div class="create-container">
-            <input type="text" placeholder="Type name" id="type-name">
-            <input type="color" id="type-color" value="#ffffff">
-            <button id="create">Create</button>
-        </div>
-        <div class="table-group">
-            <button id="toggle-force-table">Force Table</button>
-            <div id="force-table" hidden></div>
-        </div>
-        <div class="table-group">
-            <button id="toggle-repel-table">Repel Table</button>
-            <div id="repel-table" hidden></div>
+        <button id="toggle-ui">Hide UI</button>
+        <div id="toggleable-ui">
+            <div class="control-group">
+                <select id="particle-selector">
+                    <option value="0" selected>Blue</option>
+                    <option value="1">Red</option>
+                    <option value="2">Green</option>
+                </select>
+                <button id="mode-add" class="active">Spawn Particles</button>
+            </div>
+            <button id="mode-remove">Remove Particles</button>
+            <button id="mode-move">Move Particles</button>
+            <button id="clear">Clear</button>
+            <button id="pause">Pause</button>
+            <div class="create-container">
+                <input type="text" placeholder="Type name" id="type-name">
+                <input type="color" id="type-color" value="#ffffff">
+                <button id="create">Create</button>
+            </div>
+            <div class="table-group">
+                <button id="toggle-force-table">Force Table</button>
+                <div id="force-table" hidden></div>
+            </div>
+            <div class="table-group">
+                <button id="toggle-repel-table">Repel Table</button>
+                <div id="repel-table" hidden></div>
+            </div>
         </div>
     </div>
     <canvas id="particle-life"></canvas>

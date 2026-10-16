@@ -199,9 +199,9 @@ function rebuildTableUi() {
             types.forEach(toType => {
                 let currentVal = matrix[fromType]?.[toType] ?? (className === 'attr-input' ? 1 : 15);
                 html += `<td>
-                    <input type="number" class=${className}
+                    <input type="number" class="${className}"
                         data-from="${fromType}" data-to="${toType}"
-                        value="${currentVal}"
+                        value="${currentVal}">
                 </td>`;
             });
             html += `</tr>`;
@@ -268,6 +268,20 @@ function updateTables() {
         if (repulsionMatrix[from]) repulsionMatrix[from][to] = parseFloat(input.value) || 0;
     })
 }
+
+const toggleUi = document.getElementById('toggle-ui');
+const toggleableUi = document.getElementById('toggleable-ui');
+toggleableUi.classList.remove('hidden');
+toggleUi.addEventListener('click', () => {
+    if (toggleableUi.classList.contains('hidden')) {
+        toggleableUi.classList.remove('hidden');
+        toggleUi.textContent = 'Hide UI';
+    } else {
+        toggleableUi.classList.add('hidden');
+        toggleUi.textContent = 'Show UI';
+    }
+});
+
 function setActiveMode(mode, buttonEl) {
     currentMode = mode;
     document.querySelectorAll('#ui-panel button').forEach(btn => btn.classList.remove('active'));
@@ -276,7 +290,7 @@ function setActiveMode(mode, buttonEl) {
 
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
     updateTables();
     if (!paused) {
         update();
@@ -361,5 +375,4 @@ function render() {
 }
 
 rebuildTableUi();
-updateTables();
 requestAnimationFrame(gameLoop);
