@@ -47,7 +47,7 @@ document.getElementById('mode-add').addEventListener('click', (e) => setActiveMo
 document.getElementById('mode-remove').addEventListener('click', (e) => setActiveMode('remove', e.currentTarget));
 document.getElementById('mode-move').addEventListener('click', (e) => setActiveMode('move', e.currentTarget));
 document.getElementById('clear').addEventListener('click', (e) => {
-    particles.length = [];
+    particles = [];
 });
 
 function findParticlesAt(mouseX, mouseY, radiusThreshold = 20) {
