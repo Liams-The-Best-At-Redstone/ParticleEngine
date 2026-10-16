@@ -61,6 +61,34 @@
         </div>
         <button id="mode-remove">Remove Particles</button>
         <button id="mode-move">Move Particles</button>
+        <div class="force-group">
+            <button id="enable-force-table">Force Table</button>
+            <table id="force-table">
+                <tr>
+                    <th>Type</th>
+                    <th>Blue</th>
+                    <th>Red</th>
+                    <th>Green</th>
+                </tr>
+                <tr>
+                    <th>Blue</th>
+                    <th id="blue-to-blue"></th>
+                    <th id="blue-to-red"></th>
+                    <th id="blue-to-green"></th>
+                </tr>
+                <tr>
+                    <th>Red</th>
+                    <th id="red-to-blue"></th>
+                    <th id="red-to-red"></th>
+                    <th id="red-to-green"></th>
+                </tr>
+                <tr>
+                    <th>Green</th>
+                    <th id="green-to-blue"></th>
+                    <th id="green-to-red"></th>
+                    <th id="green-to-green"></th>
+                </tr>
+            </table>
         <button id="clear">Clear</button>
     </div>
     <canvas id="particle-life"></canvas>
