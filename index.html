@@ -4,49 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Particle Engine</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: #000;
-            font-family: sans-serif;
-        }
-        canvas {
-            display: block;
-        }
-        #ui-panel {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
-        button {
-            padding: 6px 12px;
-            cursor: pointer;
-            background: #444;
-            color: white;
-            border: 1px solid #666;
-            border-radius: 4px;
-        }
-        select {
-            padding: 6px 12px;
-            cursor: pointer;
-            background: #444;
-            color: white;
-            border: 1px solid #666;
-            border-radius: 4px;
-        }
-        button.active {
-            background: #007bff;
-            border-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="ui-panel">
@@ -61,36 +19,73 @@
         </div>
         <button id="mode-remove">Remove Particles</button>
         <button id="mode-move">Move Particles</button>
-        <div class="force-group">
-            <button id="enable-force-table">Force Table</button>
-            <table id="force-table">
-                <tr>
-                    <th>Type</th>
-                    <th>Blue</th>
-                    <th>Red</th>
-                    <th>Green</th>
-                </tr>
-                <tr>
-                    <th>Blue</th>
-                    <th id="blue-to-blue"></th>
-                    <th id="blue-to-red"></th>
-                    <th id="blue-to-green"></th>
-                </tr>
-                <tr>
-                    <th>Red</th>
-                    <th id="red-to-blue"></th>
-                    <th id="red-to-red"></th>
-                    <th id="red-to-green"></th>
-                </tr>
-                <tr>
-                    <th>Green</th>
-                    <th id="green-to-blue"></th>
-                    <th id="green-to-red"></th>
-                    <th id="green-to-green"></th>
-                </tr>
+        <button id="clear">Clear</button>
+        <div class="table-group">
+            <button id="toggle-force-table">Force Table</button>
+            <table id="force-table" hidden>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Blue</th>
+                        <th>Red</th>
+                        <th>Green</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Blue</th>
+                        <th><input id="blue-to-blue-force" type="number" value="1"></th>
+                        <th><input id="blue-to-red-force" type="number" value="1"></th>
+                        <th><input id="blue-to-green-force" type="number" value="1"></th>
+                    </tr>
+                    <tr>
+                        <th>Red</th>
+                        <th><input id="red-to-blue-force" type="number" value="1"></th>
+                        <th><input id="red-to-red-force" type="number" value="1"></th>
+                        <th><input id="red-to-green-force" type="number" value="1"></th>
+                    </tr>
+                    <tr>
+                        <th>Green</th>
+                        <th><input id="green-to-blue-force" type="number" value="1"></th>
+                        <th><input id="green-to-red-force" type="number" value="1"></th>
+                        <th><input id="green-to-green-force" type="number" value="1"></th>
+                    </tr>
+                </tbody>
             </table>
         </div>
-        <button id="clear">Clear</button>
+        <div class="table-group">
+            <button id="toggle-repel-table">Repel Table</button>
+            <table id="repel-table" hidden>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Blue</th>
+                        <th>Red</th>
+                        <th>Green</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Blue</th>
+                        <th><input id="blue-to-blue-repel" type="number" value="15"></th>
+                        <th><input id="blue-to-red-repel" type="number" value="15"></th>
+                        <th><input id="blue-to-green-repel" type="number" value="15"></th>
+                    </tr>
+                    <tr>
+                        <th>Red</th>
+                        <th><input id="red-to-blue-repel" type="number" value="15"></th>
+                        <th><input id="red-to-red-repel" type="number" value="15"></th>
+                        <th><input id="red-to-green-repel" type="number" value="15"></th>
+                    </tr>
+                    <tr>
+                        <th>Green</th>
+                        <th><input id="green-to-blue-repel" type="number" value="15"></th>
+                        <th><input id="green-to-red-repel" type="number" value="15"></th>
+                        <th><input id="green-to-green-repel" type="number" value="15"></th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <canvas id="particle-life"></canvas>
 

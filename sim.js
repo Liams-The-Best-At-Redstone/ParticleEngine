@@ -12,9 +12,9 @@ const types = Object.freeze({
 });
 
 const attractionMatrix = {
-    [types.BLUE]: {[types.BLUE]: 1.5, [types.RED]: 0.0, [types.GREEN]: 0.0},
-    [types.RED]: {[types.BLUE]: 0.0, [types.RED]: 1.5, [types.GREEN]: 0.0},
-    [types.GREEN]: {[types.BLUE]: 1.0, [types.RED]: 8.0, [types.GREEN]: -0.7}
+    [types.BLUE]: {[types.BLUE]: 0.0, [types.RED]: 0.0, [types.GREEN]: 0.0},
+    [types.RED]: {[types.BLUE]: 0.0, [types.RED]: 0.0, [types.GREEN]: 0.0},
+    [types.GREEN]: {[types.BLUE]: 0.0, [types.RED]: 8.0, [types.GREEN]: 0.0}
 };
 const repulsionMatrix = {
     [types.BLUE]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0},
@@ -43,9 +43,27 @@ let draggedParticles = null;
 
 let particles = [];
 
-document.getElementById('mode-add').addEventListener('click', (e) => setActiveMode('add', e.currentTarget));
-document.getElementById('mode-remove').addEventListener('click', (e) => setActiveMode('remove', e.currentTarget));
-document.getElementById('mode-move').addEventListener('click', (e) => setActiveMode('move', e.currentTarget));
+const forceButton = document.getElementById('toggle-force-table');
+const forceTable = document.getElementById('force-table');
+
+const repelButton = document.getElementById('toggle-repel-table');
+const repelTable = document.getElementById('repel-table');
+
+document.getElementById('mode-add').addEventListener('click', (e) => {
+    setActiveMode('add', e.currentTarget);
+    repelTable.hidden = true;
+    forceTable.hidden = true;
+});
+document.getElementById('mode-remove').addEventListener('click', (e) => {
+    setActiveMode('remove', e.currentTarget)
+    repelTable.hidden = true;
+    forceTable.hidden = true;
+});
+document.getElementById('mode-move').addEventListener('click', (e) => {
+    setActiveMode('move', e.currentTarget)
+    repelTable.hidden = true;
+    forceTable.hidden = true;
+});
 document.getElementById('clear').addEventListener('click', (e) => {
     particles = [];
 });
@@ -151,6 +169,73 @@ canvas.addEventListener('touchstart', handleStart);
 canvas.addEventListener('touchmove', handleMove);
 canvas.addEventListener('touchend', handleEnd);
 
+forceButton.addEventListener('click', () => {
+    forceTable.hidden = !forceTable.hidden;
+    if (!repelTable.hidden && !forceTable.hidden) {
+        repelTable.hidden = true;
+    }
+});
+
+repelButton.addEventListener('click', () => {
+    repelTable.hidden = !repelTable.hidden;
+    if (!forceTable.hidden && !repelTable.hidden) {
+        forceTable.hidden = true;
+    }
+});
+
+//Force Inputs
+const blueToBlueForce = document.getElementById('blue-to-blue-force');
+const blueToRedForce = document.getElementById('blue-to-red-force');
+const blueToGreenForce = document.getElementById('blue-to-green-force');
+
+const redToBlueForce = document.getElementById('red-to-blue-force');
+const redToRedForce = document.getElementById('red-to-red-force');
+const redToGreenForce = document.getElementById('red-to-green-force');
+
+const greenToBlueForce = document.getElementById('green-to-blue-force');
+const greenToRedForce = document.getElementById('green-to-red-force');
+const greenToGreenForce = document.getElementById('green-to-green-force');
+
+//Repel Inputs
+const blueToBlueRepel = document.getElementById('blue-to-blue-repel');
+const blueToRedRepel = document.getElementById('blue-to-red-repel');
+const blueToGreenRepel = document.getElementById('blue-to-green-repel');
+
+const redToBlueRepel = document.getElementById('red-to-blue-repel');
+const redToRedRepel = document.getElementById('red-to-red-repel');
+const redToGreenRepel = document.getElementById('red-to-green-repel');
+
+const greenToBlueRepel = document.getElementById('green-to-blue-repel');
+const greenToRedRepel = document.getElementById('green-to-red-repel');
+const greenToGreenRepel = document.getElementById('green-to-green-repel');
+
+function updateTables() {
+    //Update Attraction
+    attractionMatrix[types.BLUE][types.BLUE] = blueToBlueForce.value;
+    attractionMatrix[types.BLUE][types.RED] = blueToRedForce.value;
+    attractionMatrix[types.BLUE][types.GREEN] = blueToGreenForce.value;
+    
+    attractionMatrix[types.RED][types.BLUE] = redToBlueForce.value;
+    attractionMatrix[types.RED][types.RED] = redToRedForce.value;
+    attractionMatrix[types.RED][types.GREEN] = redToGreenForce.value;
+    
+    attractionMatrix[types.GREEN][types.BLUE] = greenToBlueForce.value;
+    attractionMatrix[types.GREEN][types.RED] = greenToRedForce.value;
+    attractionMatrix[types.GREEN][types.GREEN] = greenToGreenForce.value;
+
+    //Update Repulsion
+    repulsionMatrix[types.BLUE][types.BLUE] = blueToBlueRepel.value;
+    repulsionMatrix[types.BLUE][types.RED] = blueToRedRepel.value;
+    repulsionMatrix[types.BLUE][types.GREEN] = blueToGreenRepel.value;
+    
+    repulsionMatrix[types.RED][types.BLUE] = redToBlueRepel.value;
+    repulsionMatrix[types.RED][types.RED] = redToRedRepel.value;
+    repulsionMatrix[types.RED][types.GREEN] = redToGreenRepel.value;
+    
+    repulsionMatrix[types.GREEN][types.BLUE] = greenToBlueRepel.value;
+    repulsionMatrix[types.GREEN][types.RED] = greenToRedRepel.value;
+    repulsionMatrix[types.GREEN][types.GREEN] = greenToGreenRepel.value;
+}
 function setActiveMode(mode, buttonEl) {
     currentMode = mode;
     document.querySelectorAll('#ui-panel button').forEach(btn => btn.classList.remove('active'));
@@ -160,6 +245,7 @@ function setActiveMode(mode, buttonEl) {
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    updateTables();
     update();
     render();
 
@@ -240,4 +326,5 @@ function render() {
     }
 }
 
+updateTables();
 requestAnimationFrame(gameLoop);
