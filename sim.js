@@ -15,17 +15,17 @@ const attractionMatrix = {
     [types.BLUE]: {[types.BLUE]: 1.5, [types.RED]: 0.0, [types.GREEN]: 0.0},
     [types.RED]: {[types.BLUE]: 0.0, [types.RED]: 1.5, [types.GREEN]: 0.0},
     [types.GREEN]: {[types.BLUE]: 1.0, [types.RED]: 8.0, [types.GREEN]: -0.7}
-}
+};
 const repulsionMatrix = {
     [types.BLUE]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0},
     [types.RED]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0.0},
     [types.GREEN]: {[types.BLUE]: 50, [types.RED]: 80, [types.GREEN]: 0.0}
-}
+};
 const typeColors = {
     [types.BLUE]: 'rgba(65, 185, 255, 0.7)',
     [types.RED]: 'rgba(238, 12, 12, 0.7)',
     [types.GREEN]: 'rgba(14, 204, 8, 0.7)'
-}
+};
     
 
 const minRadius = 0;
@@ -233,7 +233,7 @@ function update() {
 
 function render() {
     for (let i = 0; i < particles.length; i++) {
-        ctx.fillStyle = typeColors[particles[i].type]];
+        ctx.fillStyle = typeColors[particles[i].type];
         ctx.beginPath();
         ctx.arc(particles[i].x, particles[i].y, particleRadius, 0, Math.PI * 2);
         ctx.fill();
