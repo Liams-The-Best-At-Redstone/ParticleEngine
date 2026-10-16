@@ -273,11 +273,10 @@ const toggleUi = document.getElementById('toggle-ui');
 const toggleableUi = document.getElementById('toggleable-ui');
 toggleableUi.classList.remove('hidden');
 toggleUi.addEventListener('click', () => {
-    if (toggleableUi.classList.contains('hidden')) {
-        toggleableUi.classList.remove('hidden');
+    toggleableUi.classList.toggle('hidden');
+    if (toggleableUi.classList.contains('hidden') {
         toggleUi.textContent = 'Hide UI';
     } else {
-        toggleableUi.classList.add('hidden');
         toggleUi.textContent = 'Show UI';
     }
 });
