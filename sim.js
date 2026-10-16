@@ -43,11 +43,11 @@ let draggedParticles = null;
 
 let particles = [];
 
-document.getElementById('mode-add').addEventListener('click', (e) => setActiveMode('add', e.target));
-document.getElementById('mode-remove').addEventListener('click', (e) => setActiveMode('remove', e.target));
-document.getElementById('mode-move').addEventListener('click', (e) => setActiveMode('move', e.target));
+document.getElementById('mode-add').addEventListener('click', (e) => setActiveMode('add', e.currentTarget));
+document.getElementById('mode-remove').addEventListener('click', (e) => setActiveMode('remove', e.currentTarget));
+document.getElementById('mode-move').addEventListener('click', (e) => setActiveMode('move', e.currentTarget));
 document.getElementById('clear').addEventListener('click', (e) => {
-    particles.length = 0;
+    particles.length = [];
 });
 
 function findParticlesAt(mouseX, mouseY, radiusThreshold = 20) {
