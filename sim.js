@@ -5,6 +5,32 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+//Force Inputs
+const blueToBlueForce = document.getElementById('blue-to-blue-force');
+const blueToRedForce = document.getElementById('blue-to-red-force');
+const blueToGreenForce = document.getElementById('blue-to-green-force');
+
+const redToBlueForce = document.getElementById('red-to-blue-force');
+const redToRedForce = document.getElementById('red-to-red-force');
+const redToGreenForce = document.getElementById('red-to-green-force');
+
+const greenToBlueForce = document.getElementById('green-to-blue-force');
+const greenToRedForce = document.getElementById('green-to-red-force');
+const greenToGreenForce = document.getElementById('green-to-green-force');
+
+//Repel Inputs
+const blueToBlueRepel = document.getElementById('blue-to-blue-repel');
+const blueToRedRepel = document.getElementById('blue-to-red-repel');
+const blueToGreenRepel = document.getElementById('blue-to-green-repel');
+
+const redToBlueRepel = document.getElementById('red-to-blue-repel');
+const redToRedRepel = document.getElementById('red-to-red-repel');
+const redToGreenRepel = document.getElementById('red-to-green-repel');
+
+const greenToBlueRepel = document.getElementById('green-to-blue-repel');
+const greenToRedRepel = document.getElementById('green-to-red-repel');
+const greenToGreenRepel = document.getElementById('green-to-green-repel');
+
 const types = Object.freeze({
     RED: 'RED',
     BLUE: 'BLUE',
@@ -67,6 +93,17 @@ document.getElementById('mode-move').addEventListener('click', (e) => {
 document.getElementById('clear').addEventListener('click', (e) => {
     particles = [];
 });
+let paused = false;
+const pauseButton = document.getElementById('pause');
+pauseButton.addEventListener('click', (e) => {
+    paused = !paused;
+    if (paused) {
+        pauseButton.textContent = 'Unpause';
+    } else {
+        pauseButton.textContent = 'Pause'
+    }
+})
+document.get
 
 function findParticlesAt(mouseX, mouseY, radiusThreshold = 20) {
     let currIndexes = [];
@@ -183,32 +220,6 @@ repelButton.addEventListener('click', () => {
     }
 });
 
-//Force Inputs
-const blueToBlueForce = document.getElementById('blue-to-blue-force');
-const blueToRedForce = document.getElementById('blue-to-red-force');
-const blueToGreenForce = document.getElementById('blue-to-green-force');
-
-const redToBlueForce = document.getElementById('red-to-blue-force');
-const redToRedForce = document.getElementById('red-to-red-force');
-const redToGreenForce = document.getElementById('red-to-green-force');
-
-const greenToBlueForce = document.getElementById('green-to-blue-force');
-const greenToRedForce = document.getElementById('green-to-red-force');
-const greenToGreenForce = document.getElementById('green-to-green-force');
-
-//Repel Inputs
-const blueToBlueRepel = document.getElementById('blue-to-blue-repel');
-const blueToRedRepel = document.getElementById('blue-to-red-repel');
-const blueToGreenRepel = document.getElementById('blue-to-green-repel');
-
-const redToBlueRepel = document.getElementById('red-to-blue-repel');
-const redToRedRepel = document.getElementById('red-to-red-repel');
-const redToGreenRepel = document.getElementById('red-to-green-repel');
-
-const greenToBlueRepel = document.getElementById('green-to-blue-repel');
-const greenToRedRepel = document.getElementById('green-to-red-repel');
-const greenToGreenRepel = document.getElementById('green-to-green-repel');
-
 function updateTables() {
     //Update Attraction
     attractionMatrix[types.BLUE][types.BLUE] = blueToBlueForce.value;
@@ -246,7 +257,9 @@ function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     updateTables();
-    update();
+    if (!paused) {
+        update();
+    }
     render();
 
     requestAnimationFrame(gameLoop);
