@@ -5,52 +5,22 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-//Force Inputs
-const blueToBlueForce = document.getElementById('blue-to-blue-force');
-const blueToRedForce = document.getElementById('blue-to-red-force');
-const blueToGreenForce = document.getElementById('blue-to-green-force');
-
-const redToBlueForce = document.getElementById('red-to-blue-force');
-const redToRedForce = document.getElementById('red-to-red-force');
-const redToGreenForce = document.getElementById('red-to-green-force');
-
-const greenToBlueForce = document.getElementById('green-to-blue-force');
-const greenToRedForce = document.getElementById('green-to-red-force');
-const greenToGreenForce = document.getElementById('green-to-green-force');
-
-//Repel Inputs
-const blueToBlueRepel = document.getElementById('blue-to-blue-repel');
-const blueToRedRepel = document.getElementById('blue-to-red-repel');
-const blueToGreenRepel = document.getElementById('blue-to-green-repel');
-
-const redToBlueRepel = document.getElementById('red-to-blue-repel');
-const redToRedRepel = document.getElementById('red-to-red-repel');
-const redToGreenRepel = document.getElementById('red-to-green-repel');
-
-const greenToBlueRepel = document.getElementById('green-to-blue-repel');
-const greenToRedRepel = document.getElementById('green-to-red-repel');
-const greenToGreenRepel = document.getElementById('green-to-green-repel');
-
-const types = Object.freeze({
-    RED: 'RED',
-    BLUE: 'BLUE',
-    GREEN: 'GREEN'
-});
+const types = ['BLUE', 'RED', 'GREEN'];
 
 const attractionMatrix = {
-    [types.BLUE]: {[types.BLUE]: 0.0, [types.RED]: 0.0, [types.GREEN]: 0.0},
-    [types.RED]: {[types.BLUE]: 0.0, [types.RED]: 0.0, [types.GREEN]: 0.0},
-    [types.GREEN]: {[types.BLUE]: 0.0, [types.RED]: 8.0, [types.GREEN]: 0.0}
+    'BLUE': {'BLUE': 1.0, 'RED': 1.0, 'GREEN': 1.0},
+    'RED': {['BLUE']: 1.0, 'RED': 1.0, 'GREEN': 1.0},
+    'GREEN': {'BLUE': 1.0, 'RED': 1.0, 'GREEN': 1.0}
 };
 const repulsionMatrix = {
-    [types.BLUE]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0},
-    [types.RED]: {[types.BLUE]: 15, [types.RED]: 15, [types.GREEN]: 0.0},
-    [types.GREEN]: {[types.BLUE]: 50, [types.RED]: 80, [types.GREEN]: 0.0}
+    'BLUE': {'BLUE': 15, 'RED': 15, 'GREEN': 15},
+    'RED': {'BLUE': 15, 'RED': 15, 'GREEN': 15},
+    'GREEN': {'BLUE': 15, 'RED': 15, 'GREEN': 15}
 };
 const typeColors = {
-    [types.BLUE]: 'rgba(65, 185, 255, 0.7)',
-    [types.RED]: 'rgba(238, 12, 12, 0.7)',
-    [types.GREEN]: 'rgba(14, 204, 8, 0.7)'
+    'BLUE': '#41b9ffb3',
+    'RED': '#ee0c0cb3',
+    'GREEN': '#0ecc08b3'
 };
     
 
@@ -102,8 +72,7 @@ pauseButton.addEventListener('click', (e) => {
     } else {
         pauseButton.textContent = 'Pause'
     }
-})
-document.get
+});
 
 function findParticlesAt(mouseX, mouseY, radiusThreshold = 20) {
     let currIndexes = [];
@@ -136,7 +105,6 @@ function getMousePos(e) {
 }
 
 function handleStart(e) {
-    const rect = canvas.getBoundingClientRect();
     const pos = getMousePos(e);
 
     if (currentMode === 'add') {
@@ -220,32 +188,85 @@ repelButton.addEventListener('click', () => {
     }
 });
 
+function rebuildTableUi() {
+    function generateTableHtml(matrix, className) {
+        let html = `<table><thead><tr><th>Type</th>`;
+        types.forEach(t => html += `<th>${t.toLowerCase()}</th>`);
+        html += `</tr></thead><tbody>`;
+
+        types.forEach(fromType => {
+            html += `<tr><th>${fromType.toLowerCase()}</th>`;
+            types.forEach(toType => {
+                let currentVal = matrix[fromType]?.[toType] ?? (className === 'attr-input' ? 1 : 15);
+                html += `<td>
+                    <input type="number" class=${className}
+                        data-from="${fromType}" data-to="${toType}"
+                        value="${currentVal}"
+                </td>`;
+            });
+            html += `</tr>`;
+        });
+        html += `</tbody></table>`;
+        return html;
+    }
+
+    forceTable.innerHTML = generateTableHtml(attractionMatrix, 'attr-input');
+    repelTable.innerHTML = generateTableHtml(repulsionMatrix, 'repel-input');
+
+    let html = ``;
+    types.forEach(t => {
+        html += `<option value="${types.indexOf(t)}">${t.toLowerCase()}</option>`;
+    });
+    particleSelector.innerHTML = html;
+}
+
+const typeName = document.getElementById('type-name');
+const typeColor = document.getElementById('type-color');
+const createButton = document.getElementById('create');
+
+function addParticle(name, color) {
+    const upperName = name.toUpperCase().trim();
+
+    attractionMatrix[upperName] = {};
+    repulsionMatrix[upperName] = {};
+
+    types.forEach(existingType => {
+        attractionMatrix[upperName][existingType] = 1;
+        repulsionMatrix[upperName][existingType] = 15;
+
+        attractionMatrix[existingType][upperName] = 1;
+        repulsionMatrix[existingType][upperName] = 15;
+    })
+
+    types.push(upperName);
+    typeColors[upperName] = color + 'b3';
+
+    typeName.value = '';
+    typeColor.value = '#ffffff';
+    rebuildTableUi();
+    updateTables();
+}
+
+createButton.addEventListener('click', (e) => {
+    addParticle(typeName.value, typeColor.value);
+    typeName.innerText = '';
+    typeColor.innerText = '#ffffff';
+})
+
 function updateTables() {
     //Update Attraction
-    attractionMatrix[types.BLUE][types.BLUE] = blueToBlueForce.value;
-    attractionMatrix[types.BLUE][types.RED] = blueToRedForce.value;
-    attractionMatrix[types.BLUE][types.GREEN] = blueToGreenForce.value;
-    
-    attractionMatrix[types.RED][types.BLUE] = redToBlueForce.value;
-    attractionMatrix[types.RED][types.RED] = redToRedForce.value;
-    attractionMatrix[types.RED][types.GREEN] = redToGreenForce.value;
-    
-    attractionMatrix[types.GREEN][types.BLUE] = greenToBlueForce.value;
-    attractionMatrix[types.GREEN][types.RED] = greenToRedForce.value;
-    attractionMatrix[types.GREEN][types.GREEN] = greenToGreenForce.value;
+    document.querySelectorAll('.attr-input').forEach(input => {
+        const from = input.getAttribute('data-from');
+        const to = input.getAttribute('data-to');
+        if (attractionMatrix[from]) attractionMatrix[from][to] = parseFloat(input.value) || 0;
+    })
 
     //Update Repulsion
-    repulsionMatrix[types.BLUE][types.BLUE] = blueToBlueRepel.value;
-    repulsionMatrix[types.BLUE][types.RED] = blueToRedRepel.value;
-    repulsionMatrix[types.BLUE][types.GREEN] = blueToGreenRepel.value;
-    
-    repulsionMatrix[types.RED][types.BLUE] = redToBlueRepel.value;
-    repulsionMatrix[types.RED][types.RED] = redToRedRepel.value;
-    repulsionMatrix[types.RED][types.GREEN] = redToGreenRepel.value;
-    
-    repulsionMatrix[types.GREEN][types.BLUE] = greenToBlueRepel.value;
-    repulsionMatrix[types.GREEN][types.RED] = greenToRedRepel.value;
-    repulsionMatrix[types.GREEN][types.GREEN] = greenToGreenRepel.value;
+    document.querySelectorAll('.repel-input').forEach(input => {
+        const from = input.getAttribute('data-from');
+        const to = input.getAttribute('data-to');
+        if (repulsionMatrix[from]) repulsionMatrix[from][to] = parseFloat(input.value) || 0;
+    })
 }
 function setActiveMode(mode, buttonEl) {
     currentMode = mode;
@@ -339,5 +360,6 @@ function render() {
     }
 }
 
+rebuildTableUi();
 updateTables();
 requestAnimationFrame(gameLoop);
