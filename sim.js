@@ -5,19 +5,19 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const types = ['BLUE', 'RED', 'GREEN'];
+let types = ['BLUE', 'RED', 'GREEN'];
 
-const attractionMatrix = {
+let attractionMatrix = {
     'BLUE': {'BLUE': 1.0, 'RED': 1.0, 'GREEN': 1.0},
     'RED': {['BLUE']: 1.0, 'RED': 1.0, 'GREEN': 1.0},
     'GREEN': {'BLUE': 1.0, 'RED': 1.0, 'GREEN': 1.0}
 };
-const repulsionMatrix = {
+let repulsionMatrix = {
     'BLUE': {'BLUE': 15, 'RED': 15, 'GREEN': 15},
     'RED': {'BLUE': 15, 'RED': 15, 'GREEN': 15},
     'GREEN': {'BLUE': 15, 'RED': 15, 'GREEN': 15}
 };
-const typeColors = {
+let typeColors = {
     'BLUE': '#41b9ffb3',
     'RED': '#ee0c0cb3',
     'GREEN': '#0ecc08b3'
@@ -215,7 +215,9 @@ function rebuildTableUi() {
 
     let html = ``;
     types.forEach(t => {
-        html += `<option value="${types.indexOf(t)}">${t.toLowerCase()}</option>`;
+        let lowerCase = t.toLowerCase();
+        let result = lowerCase.charAt(0).toUpperCase() + lowerCase.slice(1);
+        html += `<option value="${types.indexOf(t)}">${result}</option>`;
     });
     particleSelector.innerHTML = html;
 }
@@ -245,6 +247,7 @@ function addParticle(name, color) {
     typeColor.value = '#ffffff';
     rebuildTableUi();
     updateTables();
+    store();
 }
 
 createButton.addEventListener('click', (e) => {
@@ -269,15 +272,29 @@ function updateTables() {
     })
 }
 
+function store() {
+    localStorage.setItem('types', JSON.stringify(types));
+    localStorage.setItem('typeColors', JSON.stringify(typeColors));
+    localStorage.setItem('attract', JSON.stringify(attractionMatrix));
+    localStorage.setItem('repel', JSON.stringify(repulsionMatrix));
+}
+
+function get() {
+    if (localStorage.getItem('types')) types = JSON.parse(localStorage.getItem('types'));
+    if (localStorage.getItem('typeColors')) typeColors = JSON.parse(localStorage.getItem('typeColors'));
+    if (localStorage.getItem('attract')) attractionMatrix = JSON.parse(localStorage.getItem('attract'));
+    if (localStorage.getItem('repel')) repulsionMatrix = JSON.parse(localStorage.getItem('repel'));
+}
+
 const toggleUi = document.getElementById('toggle-ui');
 const toggleableUi = document.getElementById('toggleable-ui');
 toggleableUi.classList.remove('hidden');
 toggleUi.addEventListener('click', () => {
     toggleableUi.classList.toggle('hidden');
-    if (toggleableUi.classList.contains('hidden') {
-        toggleUi.textContent = 'Hide UI';
-    } else {
+    if (toggleableUi.classList.contains('hidden')) {
         toggleUi.textContent = 'Show UI';
+    } else {
+        toggleUi.textContent = 'Hide UI';
     }
 });
 
@@ -289,11 +306,12 @@ function setActiveMode(mode, buttonEl) {
 
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
     updateTables();
     if (!paused) {
         update();
     }
+    store();
+    get();
     render();
 
     requestAnimationFrame(gameLoop);
@@ -373,5 +391,6 @@ function render() {
     }
 }
 
+get();
 rebuildTableUi();
 requestAnimationFrame(gameLoop);
