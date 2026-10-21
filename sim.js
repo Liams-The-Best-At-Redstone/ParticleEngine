@@ -30,6 +30,17 @@ const friction = 0.95;
 const force = 0.5;
 const particleRadius = 5;
 
+const camera = {
+    x: 0,
+    y: 0,
+    zoom: 1,
+    isDragging: false,
+    startX: 0,
+    startY: 0,
+    startCameraX: 0,
+    startCameraY: 0
+};
+
 
 let currentMode = 'add';
 /** @type {HTMLSelectElement}*/
@@ -95,16 +106,21 @@ function findParticlesAt(mouseX, mouseY, radiusThreshold = 20) {
 function getMousePos(e) {
     const rect = canvas.getBoundingClientRect();
 
-    const mouseX = e.touches ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-    const mouseY = e.touches ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const mouseX = (clientX - rect.left) * (canvas.width / rect.width);
+    const mouseY = (clientY - rect.top) * (canvas.height / rect.height);
 
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
     return ({
-        x: mouseX,
-        y: mouseY
+        x: ((mouseX - centerX) / camera.zoom) + centerX - camera.x,
+        y: ((mouseY - centerY) / camera.zoom) + centerY - camera.y
     });
 }
 
 function handleStart(e) {
+    if (e.button !== undefined && e.button !== 0) return;
     const pos = getMousePos(e);
 
     if (currentMode === 'add') {
@@ -174,6 +190,73 @@ canvas.addEventListener('touchstart', handleStart);
 canvas.addEventListener('touchmove', handleMove);
 canvas.addEventListener('touchend', handleEnd);
 
+canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const worldX = centerX + (mouseX - centerX) / camera.zoom - camera.x;
+    const worldY = centerY + (mouseY - centerY) / camera.zoom - camera.y;
+
+    camera.zoom = Math.max(0.1, Math.min(10, camera.zoom * Math.exp(-e.deltaY * 0.001)));
+    camera.x = centerX + (mouseX - centerX) / camera.zoom - worldX;
+    camera.y = centerY + (mouseY - centerY) / camera.zoom - worldY;
+});
+
+const keysHeld = {up: false, down: false, left: false, right: false};
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') keysHeld.up = true;
+    if (e.key === 'ArrowDown') keysHeld.down = true;
+    if (e.key === 'ArrowLeft') keysHeld.left = true;
+    if (e.key === 'ArrowRight') keysHeld.right = true;
+});
+
+window.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowUp') keysHeld.up = false;
+    if (e.key === 'ArrowDown') keysHeld.down = false;
+    if (e.key === 'ArrowLeft') keysHeld.left = false;
+    if (e.key === 'ArrowRight') keysHeld.right = false;
+});
+
+function moveCamera(speed) {
+    let dx = (keysHeld.right ? 1 : 0) - (keysHeld.left ? 1 : 0);
+    let dy = (keysHeld.down ? 1 : 0) - (keysHeld.up ? 1 : 0);
+
+    if (dx !== 0 && dy !== 0) {
+        let diagSpeed = speed * 0.707;
+        camera.x -= dx * diagSpeed;
+        camera.y -= dy * diagSpeed;
+    } else {
+        camera.x -= dx * speed;
+        camera.y -= dy * speed;
+    }
+}
+
+canvas.addEventListener('mousedown', (e) => {
+    if (e.button === 1 || e.button === 2) {
+        e.preventDefault();
+        camera.isDragging = true;
+        camera.startX = e.clientX;
+        camera.startY = e.clientY;
+        camera.startCameraX = camera.x;
+        camera.startCameraY = camera.y;
+    }
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (!camera.isDragging) return;
+    const rect = canvas.getBoundingClientRect();
+    camera.x = camera.startCameraX + (e.clientX - camera.startX) * (canvas.width / rect.width) / camera.zoom;
+    camera.y = camera.startCameraY + (e.clientY - camera.startY) * (canvas.height / rect.height) / camera.zoom;
+});
+
+window.addEventListener('mouseup', () => camera.isDragging = false);
+canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
 forceButton.addEventListener('click', () => {
     forceTable.hidden = !forceTable.hidden;
     if (!repelTable.hidden && !forceTable.hidden) {
@@ -186,6 +269,15 @@ repelButton.addEventListener('click', () => {
     if (!forceTable.hidden && !repelTable.hidden) {
         forceTable.hidden = true;
     }
+});
+
+document.querySelectorAll('.table-group').forEach((table) => {
+    table.addEventListener('input', (e) => {
+        if (e.target.classList.contains('attr-input') || e.target.classList.contains('repel-input')) {
+            updateTables();
+            store();
+        }
+    });
 });
 
 function rebuildTableUi() {
@@ -305,13 +397,12 @@ function setActiveMode(mode, buttonEl) {
 }
 
 function gameLoop() {
+    moveCamera(5);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     updateTables();
     if (!paused) {
         update();
     }
-    store();
-    get();
     render();
 
     requestAnimationFrame(gameLoop);
@@ -321,8 +412,21 @@ function update() {
     const maxSq = maxRadius * maxRadius;
     const minSq = minRadius * minRadius;
 
-    const w2 = canvas.width / 2;
-    const h2 = canvas.height / 2;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const minX = centerX - centerX / camera.zoom - camera.x;
+    const maxX = centerX + centerX / camera.zoom - camera.x;
+    const minY = centerY - centerY / camera.zoom - camera.y;
+    const maxY = centerY + centerY / camera.zoom - camera.y;
+    const worldWidth = maxX - minX;
+    const worldHeight = maxY - minY;
+    const wrap = (position, min, size) => ((position - min) % size + size) % size + min;
+
+    for (const particle of particles) {
+        particle.x = wrap(particle.x, minX, worldWidth);
+        particle.y = wrap(particle.y, minY, worldHeight);
+    }
+
     for (let i = 0; i < particles.length; i++) {
         const p1 = particles[i];
         if (i < particles.length - 1) {
@@ -331,11 +435,8 @@ function update() {
 
                 let dx = p1.x - p2.x;
                 let dy = p1.y - p2.y;
-                if (dx > w2) dx -= canvas.width;
-                else if (dx < -w2) dx += canvas.width;
-
-                if (dy > h2) dy -= canvas.height;
-                else if (dy < -h2) dy += canvas.height;
+                dx -= Math.round(dx / worldWidth) * worldWidth;
+                dy -= Math.round(dy / worldHeight) * worldHeight;
                 let distSq = (dx)**2 + (dy)**2;
 
                 if (distSq > maxSq || distSq < minSq) {
@@ -377,20 +478,28 @@ function update() {
         p1.vy *= friction;
         p1.x += p1.vx;
         p1.y += p1.vy;
-        p1.x = (p1.x + canvas.width) % canvas.width;
-        p1.y = (p1.y + canvas.height) % canvas.height;
+        p1.x = wrap(p1.x, minX, worldWidth);
+        p1.y = wrap(p1.y, minY, worldHeight);
     }
 }
 
 function render() {
+    ctx.save();
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    ctx.translate(centerX, centerY);
+    ctx.scale(camera.zoom, camera.zoom);
+    ctx.translate(-centerX + camera.x, -centerY + camera.y);
     for (let i = 0; i < particles.length; i++) {
         ctx.fillStyle = typeColors[particles[i].type];
         ctx.beginPath();
         ctx.arc(particles[i].x, particles[i].y, particleRadius, 0, Math.PI * 2);
         ctx.fill();
     }
+    ctx.restore();
 }
 
 get();
 rebuildTableUi();
+updateTables();
 requestAnimationFrame(gameLoop);
