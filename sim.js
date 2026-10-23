@@ -130,8 +130,10 @@ function handleStart(e) {
             particles.push({
                 x: pos.x + (Math.random() * 40 - 20),
                 y: pos.y + (Math.random() * 40 - 20),
+                z: Math.random() * 40 - 20,
                 vx: 0,
                 vy: 0,
+                vz: 0,
                 type: activeType
             });
         }
@@ -165,6 +167,7 @@ function handleMove(e) {
 
             p.target.vx = 0;
             p.target.vy = 0;
+            p.target.vz = 0;
         })
     }
     else if (currentMode === 'remove') {
@@ -435,9 +438,10 @@ function update() {
 
                 let dx = p1.x - p2.x;
                 let dy = p1.y - p2.y;
+                let dz = p1.z - p2.z;
                 dx -= Math.round(dx / worldWidth) * worldWidth;
                 dy -= Math.round(dy / worldHeight) * worldHeight;
-                let distSq = (dx)**2 + (dy)**2;
+                let distSq = (dx)**2 + (dy)**2 + (dz)**2;
 
                 if (distSq > maxSq || distSq < minSq) {
                     continue;
@@ -451,9 +455,11 @@ function update() {
 
                 let fx1 = totalForce1 * dx;
                 let fy1 = totalForce1 * dy;
+                let fz1 = totalForce1 * dz;
 
                 let fx2 = totalForce2 * dx;
                 let fy2 = totalForce2 * dy;
+                let fz2 = totalForce2 * dz;
 
                 let repulse1 = repulsionMatrix[p1.type][p2.type]**2;
                 let repulse2 = repulsionMatrix[p2.type][p1.type]**2;
@@ -461,23 +467,29 @@ function update() {
                 if (distSq <= repulse1) {
                     p1.vx += fx1 * 5;
                     p1.vy += fy1 * 5;
+                    p1.vz += fz1 * 5;
                 } else {
                     p1.vx -= fx1;
                     p1.vy -= fy1;
+                    p1.vz -= fz1;
                 }
                 if (distSq <= repulse2) {
                     p2.vx -= fx2 * 5;
                     p2.vy -= fy2 * 5;
+                    p2.vz -= fz2 * 5;
                 } else {
                     p2.vx += fx2;
                     p2.vy += fy2;
+                    p2.vz += fz2;
                 }
             }
         }
         p1.vx *= friction;
         p1.vy *= friction;
+        p1.vz *= friction;
         p1.x += p1.vx;
         p1.y += p1.vy;
+        p1.z += p1.vz;
         p1.x = wrap(p1.x, minX, worldWidth);
         p1.y = wrap(p1.y, minY, worldHeight);
     }
